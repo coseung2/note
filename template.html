@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
+<title>{{UNIT_TITLE}} 공책정리</title>
+<!--
+  ============================================================
+  학생 공책정리 스타일 — 재사용 템플릿 (v1)
+  ============================================================
+  사용: html-builder 에이전트가 phase3 승인본 + phase4 이미지를 주입
+       (agents/html-builder.md 참조)
+
+  PDF 렌더: pdf-renderer 에이전트 담당 (agents/pdf-renderer.md)
+
+  스타일 토큰:
+    - 배경색: #fefaf0 (아이보리)
+    - 세로 마진선: rgba(255,120,120,0.35) at 13mm
+    - 가로 줄: 7mm 간격 rgba(100,140,200,0.18)
+    - 강조(형광펜): linear-gradient(transparent 60%, #ffe066 60%)
+    - 블록 테두리: 1.5px solid #d6c8a8 + 2mm 그림자
+    - 주요 색: #2a5b8a(파랑) #c94c4c(빨강) #3a7a53(초록) #e8b84c(노랑)
+
+  패턴:
+    .kv            키워드 : 설명 한 줄
+    .callout       📌 박스
+    .bubble        💬 말풍선
+    .fill-blank    📝 한 문장 정리 (빈칸)
+    .stamp         원형 단원 도장
+    .tape          마스킹테이프 장식
+    .image-slot    이미지 자리 (phase4 image_map.json 경로 주입)
+
+  ⚠️ 이미지 규칙:
+    - 모든 시각 자료는 <img src="..."> 로 주입 (phase4 산출 이미지만 사용)
+    - 인라인 SVG 손그림 생성은 지양 (image-scout 경유로 실제 이미지 파일 주입)
+    - 허용 이미지 출처 (우선순위):
+        1) 교과서 삽화 (phase1에서 추출)
+        2) 정부·공공기관 공개 자료 (국토지리정보원, 외교부 독도 등)
+        3) Wikimedia Commons CC
+        4) Unsplash / Pexels (로열티프리)
+        5) AI 생성 이미지 (폴백, 2026-04-15 방침 수정)
+-->
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Single+Day&family=Hi+Melody&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Gaegu', 'Nanum Pen Script', sans-serif; color: #2b2b2b; word-break: keep-all; overflow-wrap: break-word; line-break: strict; }
+  .block, .grid, .two-col, .three-col, .callout, .bubble, .fill-blank, .image-slot, .kv, .goals, .top-bar { page-break-inside: avoid; break-inside: avoid; }
+  .page {
+    width: 210mm; height: 297mm; padding: 14mm 14mm 14mm 18mm;
+    background-color: #fefaf0;
+    background-image:
+      linear-gradient(to right, rgba(255,120,120,0.35) 0, rgba(255,120,120,0.35) 1px, transparent 1px),
+      repeating-linear-gradient(to bottom, transparent 0, transparent 7mm, rgba(100,140,200,0.18) 7mm, rgba(100,140,200,0.18) 7.3mm);
+    background-position: 13mm 0, 0 0;
+    background-repeat: no-repeat, repeat;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .top-bar { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px dashed #c9a86a; padding-bottom: 4mm; margin-bottom: 6mm; }
+  .unit-tag { font-family: 'Hi Melody', 'Gaegu', sans-serif; font-size: 13pt; color: #6b5335; letter-spacing: 1px; }
+  .chapter-title { font-family: 'Hi Melody', 'Gaegu', sans-serif; font-size: 22pt; color: #2a5b8a; margin: 1mm 0; }
+  .page-ref { background: #fff6a8; padding: 1.5mm 3mm; border-radius: 2mm; font-size: 13pt; font-weight: bold; box-shadow: 1px 1px 0 #c9a86a; transform: rotate(-1.5deg); }
+  .date-line { font-size: 13pt; color: #777; }
+
+  .goals { background: rgba(164,214,178,0.35); border-left: 4px solid #5fa978; padding: 3mm 4mm; margin-bottom: 5mm; border-radius: 0 3mm 3mm 0; font-size: 13pt; line-height: 1.5; }
+  .goals strong { color: #3a7a53; }
+
+  .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5mm; margin-bottom: 5mm; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; }
+  .three-col .block { padding: 3mm; }
+
+  .block { background: rgba(255,255,255,0.6); border: 1.5px solid #d6c8a8; border-radius: 3mm; padding: 4mm 5mm; font-size: 13pt; line-height: 1.6; box-shadow: 2px 2px 0 rgba(201,168,106,0.4); }
+  .block h3 { font-family: 'Hi Melody', 'Gaegu', sans-serif; font-size: 14pt; color: #c94c4c; margin: 0 0 2mm 0; display: flex; align-items: center; gap: 2mm; }
+  .block h3::before { content: '★'; color: #e8b84c; }
+
+  .kv { margin: 1mm 0; }
+  .kv .k { display: inline-block; background: linear-gradient(transparent 60%, #ffe066 60%); font-weight: bold; color: #1a1a1a; padding: 0 1mm; }
+  .kv .v { color: #333; }
+  .kv.arrow::before { content: '→ '; color: #5fa978; font-weight: bold; }
+
+  .callout { background: #ffe9e9; border: 1.5px dashed #e8938a; border-radius: 3mm; padding: 3mm 4mm; font-size: 13pt; margin: 3mm 0; position: relative; }
+  .callout::before { content: '📌'; font-size: 14pt; position: absolute; top: -2mm; left: -2mm; background: white; padding: 0 1mm; border-radius: 2mm; }
+
+  .bubble { position: relative; background: #e8f0fb; border: 1.5px solid #7ba4d9; border-radius: 6mm; padding: 3mm 5mm; font-size: 13pt; margin: 3mm 8mm 3mm 3mm; }
+  .bubble::after { content: ''; position: absolute; bottom: -4mm; left: 8mm; border: 4mm solid transparent; border-top-color: #e8f0fb; border-bottom: 0; }
+
+  .image-slot { border-radius: 3mm; overflow: hidden; text-align: center; background: rgba(255,255,255,0.5); padding: 2mm; border: 1.5px solid #d6c8a8; }
+  .image-slot img { max-width: 100%; height: auto; display: block; margin: 0 auto; border-radius: 2mm; }
+  .image-slot .caption { font-size: 13pt; color: #666; margin-top: 1.5mm; font-style: italic; }
+  .image-slot .attribution { font-size: 11pt; color: #999; margin-top: 0.5mm; }
+  .image-placeholder { border: 2px dashed #c94c4c; border-radius: 3mm; padding: 4mm; background: rgba(255,228,228,0.3); text-align: center; color: #c94c4c; font-size: 13pt; min-height: 30mm; display: flex; align-items: center; justify-content: center; }
+
+  .fill-blank { padding: 4mm; background: linear-gradient(135deg, #fff3c4 0%, #ffe9a8 100%); border-radius: 3mm; font-size: 13.5pt; font-weight: bold; border: 2px solid #e8b84c; text-align: center; box-shadow: 2px 2px 0 #c9a86a; }
+  .fill-blank::before { content: '📝 한 문장 정리 '; color: #6b5335; font-size: 13pt; display: block; margin-bottom: 1mm; }
+  .blank { display: inline-block; min-width: 18mm; border-bottom: 2px solid #c94c4c; color: #c94c4c; font-weight: bold; padding: 0 2mm; }
+
+  .footer { position: absolute; bottom: 6mm; right: 10mm; font-family: 'Nanum Pen Script', cursive; font-size: 13pt; color: #999; }
+
+  .list-custom { list-style: none; padding-left: 0; margin: 2mm 0; }
+  .list-custom li { padding: 0.5mm 0 0.5mm 7mm; position: relative; font-size: 13pt; }
+  .list-custom li::before { content: '✿'; position: absolute; left: 1mm; color: #e8938a; }
+
+  .map-svg { display: block; margin: 2mm auto; }
+</style>
+</head>
+<body>
+
+<!-- ====================== PAGE 1 TEMPLATE ====================== -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">{{SUBJECT_GRADE}} ▸ {{UNIT_NAME}}</div>
+      <div class="chapter-title">{{CHAPTER_TITLE}}</div>
+      <div class="date-line">{{LESSON_NUM}}차시 ─ {{LESSON_QUESTION}}</div>
+    </div>
+    <div class="page-ref">교과서 p.{{PAGE_FROM}}~{{PAGE_TO}}</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ {{GOAL_TEXT}}</div>
+
+  <div class="grid">
+    <div class="block">
+      <h3>{{SECTION_A_TITLE}}</h3>
+      <div class="kv"><span class="k">{{KEY_1}}</span> <span class="v">: {{DESC_1}}</span></div>
+      <div class="kv"><span class="k">{{KEY_2}}</span> <span class="v">: {{DESC_2}}</span></div>
+      <div class="callout">{{CALLOUT_TEXT}}</div>
+    </div>
+    <div class="block">
+      <h3>{{SECTION_B_TITLE}}</h3>
+      <div class="image-slot">
+        <img src="{{IMAGE_PATH}}" alt="{{IMAGE_ALT}}">
+        <div class="caption">{{IMAGE_CAPTION}}</div>
+        <div class="attribution">{{IMAGE_SOURCE}}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bubble">💬 {{DIALOGUE_HINT}}</div>
+
+  <div class="fill-blank">{{SUMMARY_SENTENCE}} <span class="blank">{{BLANK}}</span>.</div>
+  <div class="footer">✎ p.1</div>
+</section>
+
+<!-- 페이지 추가 시 위 <section class="page"> 복제 -->
+
+</body>
+</html>

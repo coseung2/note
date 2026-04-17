@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>사회 5-1학기 1단원 공책정리</title>
+<link href="https://fonts.googleapis.com/css2?family=Gaegu:wght@400;700&family=Nanum+Pen+Script&family=Single+Day&family=Black+Han+Sans&display=swap" rel="stylesheet">
+<style>
+  @page { size: A4 portrait; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: 'Gaegu', 'Nanum Pen Script', sans-serif; color: #2b2b2b; }
+  .page {
+    width: 210mm; height: 297mm; padding: 14mm 14mm 14mm 18mm;
+    background-color: #fefaf0;
+    background-image:
+      linear-gradient(to right, rgba(255,120,120,0.35) 0, rgba(255,120,120,0.35) 1px, transparent 1px),
+      repeating-linear-gradient(to bottom, transparent 0, transparent 7mm, rgba(100,140,200,0.18) 7mm, rgba(100,140,200,0.18) 7.3mm);
+    background-position: 13mm 0, 0 0;
+    background-repeat: no-repeat, repeat;
+    page-break-after: always;
+    position: relative;
+    overflow: hidden;
+  }
+  .page:last-child { page-break-after: auto; }
+
+  .top-bar { display: flex; justify-content: space-between; align-items: flex-end; border-bottom: 2px dashed #c9a86a; padding-bottom: 4mm; margin-bottom: 6mm; }
+  .unit-tag { font-family: 'Black Han Sans', sans-serif; font-size: 11pt; color: #6b5335; letter-spacing: 1px; }
+  .chapter-title { font-family: 'Black Han Sans', sans-serif; font-size: 22pt; color: #2a5b8a; margin: 1mm 0; }
+  .page-ref { background: #fff6a8; padding: 1.5mm 3mm; border-radius: 2mm; font-size: 12pt; font-weight: bold; box-shadow: 1px 1px 0 #c9a86a; transform: rotate(-1.5deg); }
+  .date-line { font-size: 11pt; color: #777; }
+
+  .goals { background: rgba(164,214,178,0.35); border-left: 4px solid #5fa978; padding: 3mm 4mm; margin-bottom: 5mm; border-radius: 0 3mm 3mm 0; font-size: 13pt; line-height: 1.5; }
+  .goals strong { color: #3a7a53; }
+
+  .grid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5mm; margin-bottom: 5mm; }
+  .block { background: rgba(255,255,255,0.6); border: 1.5px solid #d6c8a8; border-radius: 3mm; padding: 4mm 5mm; font-size: 13pt; line-height: 1.6; box-shadow: 2px 2px 0 rgba(201,168,106,0.4); }
+  .block h3 { font-family: 'Black Han Sans', sans-serif; font-size: 14pt; color: #c94c4c; margin: 0 0 2mm 0; display: flex; align-items: center; gap: 2mm; }
+  .block h3::before { content: '★'; color: #e8b84c; }
+
+  .kv { margin: 1mm 0; }
+  .kv .k { display: inline-block; background: linear-gradient(transparent 60%, #ffe066 60%); font-weight: bold; color: #1a1a1a; padding: 0 1mm; }
+  .kv .v { color: #333; }
+  .kv.arrow::before { content: '→ '; color: #5fa978; font-weight: bold; }
+
+  .callout { background: #ffe9e9; border: 1.5px dashed #e8938a; border-radius: 3mm; padding: 3mm 4mm; font-size: 12.5pt; margin: 3mm 0; position: relative; }
+  .callout::before { content: '📌'; font-size: 14pt; position: absolute; top: -2mm; left: -2mm; background: white; padding: 0 1mm; border-radius: 2mm; }
+
+  .bubble { position: relative; background: #e8f0fb; border: 1.5px solid #7ba4d9; border-radius: 6mm; padding: 3mm 5mm; font-size: 12pt; margin: 3mm 8mm 3mm 3mm; }
+  .bubble::after { content: ''; position: absolute; bottom: -4mm; left: 8mm; border: 4mm solid transparent; border-top-color: #e8f0fb; border-bottom: 0; }
+
+  .sketch-area { border: 2px dashed #b5b5b5; border-radius: 3mm; padding: 3mm; background: rgba(255,255,255,0.5); text-align: center; min-height: 55mm; position: relative; }
+  .sketch-label { font-size: 10pt; color: #999; position: absolute; top: 2mm; left: 3mm; }
+
+  .fill-blank { margin-top: auto; padding: 4mm; background: linear-gradient(135deg, #fff3c4 0%, #ffe9a8 100%); border-radius: 3mm; font-size: 13.5pt; font-weight: bold; border: 2px solid #e8b84c; text-align: center; box-shadow: 2px 2px 0 #c9a86a; }
+  .fill-blank::before { content: '📝 한 문장 정리 '; color: #6b5335; font-size: 11pt; display: block; margin-bottom: 1mm; }
+  .blank { display: inline-block; min-width: 18mm; border-bottom: 2px solid #c94c4c; color: #c94c4c; font-weight: bold; padding: 0 2mm; }
+
+  .footer { position: absolute; bottom: 6mm; right: 10mm; font-family: 'Nanum Pen Script', cursive; font-size: 11pt; color: #999; }
+  .stamp { position: absolute; top: 20mm; right: 8mm; width: 22mm; height: 22mm; border: 2px solid #c94c4c; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-family: 'Black Han Sans', sans-serif; color: #c94c4c; font-size: 9pt; transform: rotate(-8deg); text-align: center; line-height: 1; opacity: 0.8; }
+
+  .list-custom { list-style: none; padding-left: 0; margin: 2mm 0; }
+  .list-custom li { padding: 0.5mm 0 0.5mm 7mm; position: relative; font-size: 12.5pt; }
+  .list-custom li::before { content: '✿'; position: absolute; left: 1mm; color: #e8938a; }
+
+  .map-svg { display: block; margin: 2mm auto; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4mm; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; }
+  .three-col .block { padding: 3mm; }
+
+  .tape { position: absolute; top: -3mm; background: rgba(245,200,135,0.7); width: 22mm; height: 6mm; transform: rotate(-4deg); border-left: 1px dashed rgba(255,255,255,0.5); border-right: 1px dashed rgba(255,255,255,0.5); }
+  .tape.left { left: 5mm; } .tape.right { right: 5mm; transform: rotate(3deg); }
+
+  .mini-icon { display: inline-block; vertical-align: middle; width: 18px; height: 18px; margin-right: 2mm; }
+</style>
+</head>
+<body>
+
+<!-- ============================ PAGE 1 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원 우리나라 국토 여행</div>
+      <div class="chapter-title">주제1. 우리나라 지형 여행</div>
+      <div class="date-line">1차시 ─ 우리 국토에는 어떤 지형이 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.10~17</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 산지·하천·해안 등 다양한 지형의 <u>위치</u>를 설명할 수 있다.</div>
+
+  <div class="grid">
+    <div class="block">
+      <h3>지형이 뭘까?</h3>
+      <div class="kv"><span class="k">지형</span> <span class="v">: 땅의 생김새</span></div>
+      <div class="kv"><span class="k">우리 국토</span> <span class="v">: 산지 많음 + 삼면이 바다</span></div>
+      <div class="callout">산지에서 시작한 <b>하천</b>을 따라 <b>평야</b>가 펼쳐지고, 해안엔 <b>모래사장·갯벌</b>!</div>
+    </div>
+    <div class="block">
+      <h3>지형 용어 사전</h3>
+      <div class="kv"><span class="k">산지</span> <span class="v">: 높고 낮은 산들이 모인 곳</span></div>
+      <div class="kv"><span class="k">하천</span> <span class="v">: 땅 위를 흐르는 크고 작은 물줄기</span></div>
+      <div class="kv"><span class="k">해안</span> <span class="v">: 바다와 육지가 맞닿은 부분</span></div>
+      <div class="kv"><span class="k">평야</span> <span class="v">: 평평하고 넓은 땅 (예: 김포평야)</span></div>
+      <div class="kv"><span class="k">섬</span> <span class="v">: 바다·강으로 둘러싸인 땅</span></div>
+      <div class="kv"><span class="k">갯벌</span> <span class="v">: 썰물 때 드러나는 진흙 땅</span></div>
+    </div>
+  </div>
+
+  <div class="block" style="margin-bottom:5mm;">
+    <h3>한강을 따라 떠나는 지형 여행 🚶</h3>
+    <div style="font-size:13pt;">
+      <span class="k">검룡소</span>(강원도 태백시) → 남한강·북한강 만남(<span class="k">두물머리</span>) → 서울특별시 → <span class="k">황해</span>로!
+    </div>
+    <svg class="map-svg" width="350" height="70" viewBox="0 0 350 70">
+      <circle cx="20" cy="35" r="8" fill="#7ba4d9"/><text x="14" y="58" font-size="10" fill="#555">검룡소</text>
+      <path d="M28 35 Q 80 15, 130 35 T 230 35 T 320 35" stroke="#5a8fd6" stroke-width="3" fill="none" stroke-dasharray="2,3"/>
+      <circle cx="130" cy="35" r="6" fill="#e8b84c"/><text x="110" y="58" font-size="10" fill="#555">두물머리</text>
+      <circle cx="230" cy="35" r="6" fill="#e8938a"/><text x="213" y="58" font-size="10" fill="#555">서울</text>
+      <polygon points="320,35 335,30 335,40" fill="#5a8fd6"/><text x="305" y="20" font-size="10" fill="#555">→ 황해</text>
+    </svg>
+  </div>
+
+  <div class="bubble">💬 "한강은 어디까지 이어질까?" ─ 산들이의 질문에서 여행 시작!</div>
+
+  <div class="fill-blank">우리 국토에는 산지, 하천, 해안 등 다양한 <span class="blank">지&nbsp;형</span>이 있다.</div>
+  <div class="footer">✎ 2026.04.15 작성</div>
+</section>
+
+<!-- ============================ PAGE 2 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원</div>
+      <div class="chapter-title">우리나라의 산지</div>
+      <div class="date-line">2차시 ─ 산지는 어디에 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.18~21</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 우리나라 산지의 <u>분포 특징</u>을 설명할 수 있다.</div>
+
+  <div class="grid">
+    <div class="block">
+      <h3>산지의 특징</h3>
+      <div class="kv"><span class="k">국토의 약 70%</span> <span class="v">: 산지 🏔</span></div>
+      <div class="kv"><span class="k">산맥</span> <span class="v">: 산봉우리가 길게 이어진 것</span></div>
+      <div class="kv arrow"><span class="v">북쪽·동쪽 = 높고 험함</span></div>
+      <div class="kv arrow"><span class="v">서쪽 = 낮아짐 (동고서저)</span></div>
+    </div>
+    <div class="block">
+      <svg viewBox="0 0 160 110" width="100%" style="max-width:180px; display:block; margin:0 auto;">
+        <path d="M15 15 L20 95 L50 95 L75 80 L95 85 L130 95 L140 10 Z" fill="#d6e9c9" stroke="#6b8e5a" stroke-width="1.5"/>
+        <polygon points="30,30 35,22 40,30" fill="#6b5335"/>
+        <polygon points="55,28 62,18 68,28" fill="#6b5335"/>
+        <polygon points="78,38 85,28 92,38" fill="#8a6e45"/>
+        <polygon points="100,48 107,38 114,48" fill="#8a6e45"/>
+        <polygon points="118,58 125,48 132,58" fill="#c9a86a"/>
+        <text x="30" y="70" font-size="8" fill="#3a5a3a">동↑</text>
+        <text x="115" y="70" font-size="8" fill="#3a5a3a">서↓</text>
+      </svg>
+      <div style="text-align:center; font-size:11pt; color:#666;">↑ 동쪽이 높고 서쪽이 낮다</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>주요 산맥 &amp; 산</h3>
+    <div class="two-col">
+      <div>
+        <div style="font-weight:bold; color:#2a5b8a;">📌 주요 산맥</div>
+        <ul class="list-custom">
+          <li>낭림산맥 · 함경산맥</li>
+          <li>마천령산맥 · 태백산맥</li>
+          <li>소백산맥</li>
+        </ul>
+      </div>
+      <div>
+        <div style="font-weight:bold; color:#2a5b8a;">📌 주요 산</div>
+        <ul class="list-custom">
+          <li>백두산(2744m) · 한라산</li>
+          <li>설악산 · 오대산 · 태백산</li>
+          <li>지리산 · 덕유산 · 속리산</li>
+          <li>무등산 · 월출산</li>
+        </ul>
+      </div>
+    </div>
+    <div class="callout"><b>국립공원</b> 예: 지리산·설악산·덕유산·한라산 ─ 경관 보호!</div>
+  </div>
+
+  <div class="bubble">💬 우리봇: "같은 지리산이어도 올라오는 길마다 보이는 풍경이 달라요!"</div>
+
+  <div class="fill-blank">우리 국토는 약 70%가 산지이고, 높은 산은 대체로 북쪽과 <span class="blank">동</span>쪽에 분포한다.</div>
+  <div class="footer">✎ p.2</div>
+</section>
+
+<!-- ============================ PAGE 3 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원</div>
+      <div class="chapter-title">우리나라의 하천</div>
+      <div class="date-line">3차시 ─ 하천은 어디에 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.22~23</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 하천의 <u>분포 특징</u>을 설명할 수 있다.</div>
+
+  <div class="grid">
+    <div class="block">
+      <h3>하천 특징</h3>
+      <div class="kv"><span class="k">지형</span> <span class="v">: 동쪽 높고 서쪽 낮음</span></div>
+      <div class="kv arrow"><span class="v">큰 강은 동쪽 산지 → 황해/남해</span></div>
+      <div class="kv"><span class="k">상류</span> <span class="v">: 폭포·계곡 (빠르게 흐름)</span></div>
+      <div class="kv"><span class="k">하류</span> <span class="v">: 평야 발달 (벼농사 🌾)</span></div>
+    </div>
+    <div class="block">
+      <svg viewBox="0 0 160 120" width="100%" style="max-width:180px;">
+        <rect x="0" y="0" width="160" height="120" fill="#eaf3fb"/>
+        <path d="M5 15 Q40 20, 50 50 T 80 100 L 155 115" stroke="#3a7abc" stroke-width="3" fill="none"/>
+        <path d="M50 50 Q65 40, 85 60" stroke="#3a7abc" stroke-width="2" fill="none"/>
+        <circle cx="5" cy="15" r="4" fill="#c94c4c"/>
+        <text x="8" y="12" font-size="8" fill="#444">태백(상류)</text>
+        <text x="100" y="100" font-size="8" fill="#444">하류→바다</text>
+      </svg>
+      <div style="text-align:center; font-size:11pt; color:#666;">↑ 상류→하류 흐름</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>주요 하천</h3>
+    <div class="two-col">
+      <ul class="list-custom">
+        <li><b>압록강</b> : 가장 긴 강. 한·중 경계</li>
+        <li><b>두만강</b> : 북동쪽</li>
+        <li><b>대동강</b> : 평양</li>
+        <li><b>한강</b> : 서울 지남 → 황해</li>
+        <li><b>금강</b> : 충남·전북 경계</li>
+      </ul>
+      <ul class="list-custom">
+        <li><b>낙동강</b> : 태백시 → 남해</li>
+        <li><b>영산강</b> : 담양 → 황해</li>
+        <li><b>섬진강</b> : 남쪽</li>
+        <li><b>청천강</b> · <b>임진강</b></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="callout">💡 여주 평야의 쌀이 유명한 이유? ─ 한강 하류 평야의 비옥한 땅 덕!</div>
+  <div class="bubble">💬 엄마: "이 지역은 예부터 벼농사로 좋은 쌀을 생산했단다."</div>
+
+  <div class="fill-blank">우리나라 큰 하천은 대부분 <span class="blank">동</span>쪽 산지에서 시작해 <span class="blank">황&nbsp;해</span>나 남해로 흐른다.</div>
+  <div class="footer">✎ p.3</div>
+</section>
+
+<!-- ============================ PAGE 4 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원</div>
+      <div class="chapter-title">우리나라의 해안</div>
+      <div class="date-line">4차시 ─ 해안은 어디에 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.24~25</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 동해안·서해안·남해안의 <u>특징</u>을 설명할 수 있다.</div>
+
+  <div class="three-col">
+    <div class="block" style="background:rgba(186,220,250,0.4);">
+      <h3 style="color:#2a5b8a;">🌊 동해안</h3>
+      <div class="kv"><span class="k">해안선</span> <span class="v">: 단조</span></div>
+      <div class="kv"><span class="k">수심</span> <span class="v">: 깊음</span></div>
+      <div class="kv"><span class="k">특징</span> <span class="v">: 넓은 모래사장</span></div>
+      <div style="font-size:11pt;color:#555;margin-top:2mm;">📍 경포 해수욕장</div>
+    </div>
+    <div class="block" style="background:rgba(250,220,186,0.4);">
+      <h3 style="color:#c94c4c;">🏖 서해안</h3>
+      <div class="kv"><span class="k">해안선</span> <span class="v">: 복잡</span></div>
+      <div class="kv"><span class="k">수심</span> <span class="v">: 얕음</span></div>
+      <div class="kv"><span class="k">특징</span> <span class="v">: 갯벌 발달</span></div>
+      <div style="font-size:11pt;color:#555;margin-top:2mm;">📍 신안 갯벌, 운여 해수욕장</div>
+    </div>
+    <div class="block" style="background:rgba(210,240,200,0.4);">
+      <h3 style="color:#3a7a53;">🏝 남해안</h3>
+      <div class="kv"><span class="k">해안선</span> <span class="v">: 복잡</span></div>
+      <div class="kv"><span class="k">특징</span> <span class="v">: 섬이 많음 → 다도해</span></div>
+      <div class="kv"><span class="k">갯벌</span> <span class="v">: 발달</span></div>
+      <div style="font-size:11pt;color:#555;margin-top:2mm;">📍 한려해상국립공원</div>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:5mm;">
+    <h3>밀물 &amp; 썰물의 힘</h3>
+    <div class="kv"><span class="k">서해안·남해안</span> <span class="v">: 밀물과 썰물의 차가 큼 → 갯벌 발달 🦪</span></div>
+    <div class="kv"><span class="k">유네스코 세계 유산</span> <span class="v">: 서·남해안 갯벌 일부 등재 🌍</span></div>
+    <svg width="100%" height="55" viewBox="0 0 400 55">
+      <path d="M0 30 Q50 20, 100 30 T 200 30 T 300 30 T 400 30" stroke="#3a7abc" stroke-width="2" fill="none"/>
+      <path d="M0 40 Q50 30, 100 40 T 200 40 T 300 40 T 400 40" stroke="#5a8fd6" stroke-width="2" fill="none" opacity="0.6"/>
+      <text x="10" y="15" font-size="10" fill="#444">← 밀물</text>
+      <text x="340" y="55" font-size="10" fill="#444">썰물 →</text>
+      <circle cx="200" cy="35" r="3" fill="#c94c4c"/>
+    </svg>
+  </div>
+
+  <div class="bubble">💬 "똑같은 바다인데, 왜 여긴 모래사장이고 저긴 갯벌일까?"</div>
+
+  <div class="fill-blank">동해안은 해안선이 <span class="blank">단&nbsp;조</span>롭고, 서해안과 남해안은 해안선이 <span class="blank">복&nbsp;잡</span>하다.</div>
+  <div class="footer">✎ p.4</div>
+</section>
+
+<!-- ============================ PAGE 5 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원</div>
+      <div class="chapter-title">지형 이용 &amp; 국토 여행</div>
+      <div class="date-line">5차시 ─ 사람들은 지형을 어떻게 이용할까?</div>
+    </div>
+    <div class="page-ref">교과서 p.26~31</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 지형이 사람들 생활에 어떤 영향을 주는지 알고, 국립공원·생태관광지를 이해한다.</div>
+
+  <div class="three-col">
+    <div class="block">
+      <h3>🏔 산지</h3>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li>목장 → 가축 기름</li>
+        <li>나무로 목재·버섯</li>
+        <li>비탈면 → 고랭지 채소</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>🌊 하천</h3>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li>여가 활동</li>
+        <li>댐 → 물 저장·에너지</li>
+        <li>평야에서 벼농사 🌾</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>🏖 해안</h3>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li>갯벌 → 굴·조개</li>
+        <li>양식업 (김·전복)</li>
+        <li>해수욕장 🏊</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:5mm;">
+    <h3>아름다운 국토 보호하기</h3>
+    <div class="kv"><span class="k">국립공원</span> <span class="v">: 아름다운 지형 경관을 대표하는 곳을 지정 → 보호</span></div>
+    <div class="kv"><span class="k">생태 관광지</span> <span class="v">: 보전 가치 높은 지역 선정 → 체험 관리</span></div>
+    <div class="callout">
+      <b>대표 생태 관광지</b> 🌱 : 순천만 · 경포호 · 태화강 · 저지곶자왈 · 돌리네습지 · 대송습지 · 황새공원
+    </div>
+  </div>
+
+  <div class="bubble">💬 "자연환경을 보전하면서 체험할 수 있는 곳? 생태 관광지로 떠나자!"</div>
+
+  <div class="fill-blank">우리나라는 아름다운 지형을 <span class="blank">국립공원</span>으로 지정해 보호하거나, <span class="blank">생&nbsp;태</span> 관광지로 관리한다.</div>
+  <div class="footer">✎ p.5</div>
+</section>
+
+<!-- ============================ PAGE 6 ============================ -->
+<section class="page">
+  <div class="stamp">우리 땅<br>독도</div>
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원 ▸ 주제2</div>
+      <div class="chapter-title">우리 땅 독도</div>
+      <div class="date-line">1차시 ─ 독도는 어디에 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.32~35</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 독도의 <u>위치·행정구역·가는 방법</u>을 설명할 수 있다.</div>
+
+  <div class="grid">
+    <div class="block">
+      <h3>위치 &amp; 구성</h3>
+      <div class="kv"><span class="k">위치</span> <span class="v">: 우리 영토의 동쪽 끝 섬</span></div>
+      <div class="kv"><span class="k">구성</span> <span class="v">: 동도 + 서도 + 89개 바위섬</span></div>
+      <div class="kv"><span class="k">행정구역</span> <span class="v">: 경상북도 울릉군</span></div>
+      <div class="kv"><span class="k">동도</span> <span class="v">: 등대, 경비대 숙소, 헬기장</span></div>
+      <div class="kv"><span class="k">서도</span> <span class="v">: 주민 숙소</span></div>
+    </div>
+    <div class="block">
+      <h3>거리 비교 📏</h3>
+      <svg viewBox="0 0 200 120" width="100%" style="max-width:220px;">
+        <rect x="0" y="0" width="200" height="120" fill="#e4f0fa"/>
+        <circle cx="40" cy="55" r="10" fill="#6b8e5a"/><text x="25" y="80" font-size="9">울릉도</text>
+        <circle cx="110" cy="60" r="6" fill="#c94c4c"/><text x="95" y="85" font-size="9">독도</text>
+        <circle cx="175" cy="65" r="8" fill="#888"/><text x="158" y="90" font-size="9">오키섬(日)</text>
+        <line x1="50" y1="55" x2="104" y2="60" stroke="#2a5b8a" stroke-dasharray="2,2"/>
+        <text x="60" y="50" font-size="8" fill="#2a5b8a" font-weight="bold">87.4km</text>
+        <line x1="116" y1="60" x2="167" y2="65" stroke="#888" stroke-dasharray="2,2"/>
+        <text x="122" y="55" font-size="8" fill="#888" font-weight="bold">157.5km</text>
+      </svg>
+      <div style="text-align:center;font-size:11pt;color:#2a5b8a;font-weight:bold;">울릉도가 훨씬 가까워요!</div>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>독도 가는 방법 🚢</h3>
+    <div style="font-size:13pt; line-height:1.8;">
+      출발(강릉/묵호항/후포항/포항) <b style="color:#c94c4c;">→</b> <span class="k">울릉도</span> <b style="color:#c94c4c;">→</b> <span class="k">독도</span>
+    </div>
+    <div class="callout">💡 맑은 날은 울릉도에서 <b>맨눈으로 독도</b>를 볼 수 있음!</div>
+  </div>
+
+  <div class="fill-blank">독도는 우리나라 영토의 <span class="blank">동</span>쪽 끝에 있는 섬으로, 경상북도 울릉군에 속한다.</div>
+  <div class="footer">✎ p.6</div>
+</section>
+
+<!-- ============================ PAGE 7 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원 ▸ 주제2</div>
+      <div class="chapter-title">독도의 지리적 특성</div>
+      <div class="date-line">2차시 ─ 독도에는 무엇이 있을까?</div>
+    </div>
+    <div class="page-ref">교과서 p.36~39</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 독도의 <u>지형·기후·자원·동식물</u>을 이해한다.</div>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>🌋 지형</h3>
+      <div class="kv"><span class="k">형성</span> <span class="v">: 화산 활동으로 용암이 굳음</span></div>
+      <div class="kv"><span class="k">독특한 지형</span> <span class="v">:</span></div>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li>삼형제굴 바위 (세 동굴 한 점 만남)</li>
+        <li>한반도 바위 (한반도 모양!)</li>
+        <li>코끼리 바위</li>
+        <li>천장굴</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>☀ 기후</h3>
+      <div class="kv"><span class="k">여름</span> <span class="v">: 시원</span></div>
+      <div class="kv"><span class="k">겨울</span> <span class="v">: 비교적 온화</span></div>
+      <div class="kv"><span class="k">강수</span> <span class="v">: 1년 약 150일 눈·비 (습함)</span></div>
+      <div class="kv"><span class="k">1월</span> <span class="v">: 평균기온 영하로 안 내려감</span></div>
+      <div class="kv"><span class="k">8월</span> <span class="v">: 평균기온 25℃ 이하</span></div>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:5mm;">
+    <h3>💎 자원 &amp; 경제 가치</h3>
+    <div class="two-col">
+      <div>
+        <div class="kv"><span class="k">가스 하이드레이트</span></div>
+        <div style="font-size:11pt; color:#666; padding-left:3mm;">↳ '불타는 얼음'. 청정에너지로 주목!</div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">해양 심층수</span></div>
+        <div style="font-size:11pt; color:#666; padding-left:3mm;">↳ 식수·식품·화장품·의약품 활용</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:3mm;">
+    <h3>🐟 동식물</h3>
+    <div class="two-col">
+      <div>
+        <b style="color:#3a7a53;">🌿 식물</b>
+        <ul class="list-custom" style="font-size:12pt;">
+          <li>해국, 섬기린초</li>
+          <li>독도 사철나무 (천연기념물)</li>
+        </ul>
+      </div>
+      <div>
+        <b style="color:#c94c4c;">🐦 동물</b>
+        <ul class="list-custom" style="font-size:12pt;">
+          <li>괭이갈매기 (울음이 고양이!)</li>
+          <li>바다제비, 오징어</li>
+          <li>도화새우(독도새우), 돌돔</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="fill-blank">독도는 <span class="blank">화&nbsp;산</span> 활동으로 만들어졌으며, 다양한 동식물이 살고 있다.</div>
+  <div class="footer">✎ p.7</div>
+</section>
+
+<!-- ============================ PAGE 8 ============================ -->
+<section class="page">
+  <div class="top-bar">
+    <div>
+      <div class="unit-tag">사회 5-1 ▸ 1단원 ▸ 주제2</div>
+      <div class="chapter-title">독도, 우리가 지킨 우리 땅</div>
+      <div class="date-line">3~4차시 ─ 옛 기록과 독도를 지킨 사람들</div>
+    </div>
+    <div class="page-ref">교과서 p.40~49</div>
+  </div>
+
+  <div class="goals"><strong>◎ 학습 목표</strong> ─ 옛 자료·지킨 사람들을 통해 독도가 <u>우리 영토</u>임을 안다.</div>
+
+  <div class="two-col">
+    <div class="block">
+      <h3>📜 우리나라 옛 자료</h3>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li><b>세종실록 지리지</b>(1454) : 무릉과 우산은 울진현 정동쪽 바다</li>
+        <li><b>팔도총도</b>(1531) : 울릉도·독도 그림</li>
+        <li><b>동국대지도</b>(18C) : 작은 섬 독도 그려짐</li>
+        <li><b>대한제국 칙령 41호</b>(1900) : 석도(독도)를 울도군 관할</li>
+      </ul>
+    </div>
+    <div class="block">
+      <h3>🌏 다른 나라 자료</h3>
+      <ul class="list-custom" style="font-size:12pt;">
+        <li>일본 <b>삼국접양지도</b>(1785) : 독도 = 조선 영토 색</li>
+        <li>일본 <b>태정관 지령</b>(1877) : 독도는 일본과 관계 없음</li>
+        <li>프랑스 <b>조선왕국전도</b>(1737) : 조선 영토로 표시</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:5mm;">
+    <h3>🛡 독도를 지킨 사람들</h3>
+    <div class="two-col">
+      <div>
+        <div class="kv"><span class="k">이사부</span> <span class="v">: 신라 장군, 우산국 정복</span></div>
+        <div class="kv"><span class="k">안용복</span> <span class="v">: 조선, 일본 2회 → 우리 땅임을 확인</span></div>
+      </div>
+      <div>
+        <div class="kv"><span class="k">독도 의용 수비대</span> <span class="v">: 울릉도 청년들</span></div>
+        <div class="kv"><span class="k">최종덕</span> <span class="v">: 최초 독도 주민</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="block" style="margin-top:3mm;">
+    <h3>🏠 독도의 시설 &amp; 지금 지키는 사람들</h3>
+    <div class="kv"><span class="k">시설</span> <span class="v">: 주민 숙소 · 경비대 건물 · 등대 · 선착장 · 표지석</span></div>
+    <div class="kv"><span class="k">독도 경비대</span> <span class="v">: 경찰로 구성, 동도에서 생활</span></div>
+    <div class="kv"><span class="k">동해 영토 수호 훈련</span> <span class="v">: 해양경찰·해군·공군 정기 훈련</span></div>
+    <div class="callout">📢 민간단체 <b>반크</b>는 외국 사이트의 독도 오표기 수정 요청 + SNS로 독도 홍보!</div>
+  </div>
+
+  <div class="bubble">💬 "이분들을 본받아서 나도 독도를 아끼는 마음을 가져야지!"</div>
+
+  <div class="fill-blank"><span class="blank">독&nbsp;도</span>는 오래전부터 우리 민족이 지켜 온 우리 땅이다.</div>
+  <div class="footer">✎ p.8 · 1단원 끝!</div>
+</section>
+
+</body>
+</html>
