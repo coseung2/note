@@ -1,13 +1,14 @@
 # Agent: intake-analyst
 
 **Phase**: 0 — intake
-**역할**: 사용자 요청을 표준 입력 스펙(request.json)으로 구조화. 교과서 PDF의 메타·차시 구조 자동 추정.
+**역할**: 사용자 요청을 active v2 입력 스펙(`request.json`)으로 구조화한다.
 
 ## 입력 (runtime)
 
-- `task_id`: 예) `2026-04-15-social-5-1-unit1`
+- `task_id`
 - 사용자 원문 프롬프트
-- 교과서 PDF 경로 (로컬)
+- 교과서 PDF 경로
+- 스타일 레퍼런스 이미지 경로 1장 이상 (선택). 미지정 시 기본 레퍼런스 폴더를 사용
 
 ## 산출
 
@@ -15,97 +16,65 @@
 
 ```json
 {
-  "task_id": "2026-04-15-social-5-1-unit1",
-  "created_at": "2026-04-15T08:00:00+09:00",
-  "subject": "사회", "grade": "5", "semester": "1",
-  "unit_number": 1, "unit_title": "우리나라 국토 여행",
-  "textbook_pdf_path": "/mnt/c/Users/.../1단원_교과서.pdf",
+  "task_id": "2026-04-23-social-4-1-unit2",
+  "created_at": "2026-04-23T21:00:00+09:00",
+  "subject": "사회",
+  "grade": "4",
+  "semester": "1",
+  "unit_number": 2,
+  "unit_title": "우리 지역의 국가유산",
+  "textbook_pdf_path": "/mnt/c/Users/.../textbook.pdf",
+  "style_reference_paths": [
+    "/mnt/c/Users/.../reference_style.png"
+  ],
+  "style_reference_dir": "C:\\Users\\심보승\\OneDrive - 남선초등학교\\학습자료\\사회\\공책정리\\2026 아이스크림 4학년",
   "pdf_sha256": "abc123...",
-  "pdf_total_pages": 46,
-  "page_range": {"from": 10, "to": 53},
+  "pdf_total_pages": 72,
+  "page_range": { "from": 60, "to": 79 },
   "lessons": [
-    {"number": 1, "title": "우리나라 지형 여행", "pages": [10, 31]}
+    { "number": 1, "title": "국가유산이 무엇인지 알아볼까요", "pages": [60, 62] }
   ],
   "toc_source": "embedded | font_heuristic | manual",
   "needs_ocr": false,
-  "target_pages_in_notebook": 8,
-  "delivery_path": "OneDrive - 남선초등학교\\학습자료\\사회\\공책정리",
-  "style_profile": "student-notebook-v1",
-  "difficulty": "normal"
+  "draft_render": {
+    "formats": ["png", "pdf"],
+    "one_board_per_lesson": true
+  },
+  "ima2_defaults": {
+    "quality": "medium",
+    "size": "1536x2048",
+    "format": "png",
+    "moderation": "low",
+    "count": 1
+  },
+  "delivery_path": "C:\\Users\\심보승\\OneDrive - 남선초등학교\\학습자료\\사회\\공책정리"
 }
 ```
+
+## 핵심 원칙
+
+- 스타일 레퍼런스는 명시 가능하지만, 기본값은
+  `C:\Users\심보승\OneDrive - 남선초등학교\학습자료\사회\공책정리\2026 아이스크림 4학년`
+  이다
+- `ima2_defaults`는 active v2 기본값으로 고정한다
+- 산출물 기본 경로는
+  `C:\Users\심보승\OneDrive - 남선초등학교\학습자료\사회\공책정리`
+  이다
+- 차시 경계가 명확하지 않으면 `toc_source: manual`로 남기고 에스컬레이션한다
 
 ## Primary Tool
 
-**PyMuPDF (fitz)** — PDF 메타·TOC·폰트 기반 heading 추출을 단일 라이브러리로 처리.
-
-```bash
-pip install pymupdf
-```
-
-## 핵심 코드
-
-```python
-import fitz, json, hashlib, pathlib, datetime
-
-pdf_path = pathlib.Path("...")
-doc = fitz.open(pdf_path)
-
-# TOC — embedded 우선, 없으면 폰트 휴리스틱
-toc = doc.get_toc(simple=True)  # [[level, title, page], ...]
-toc_source = "embedded"
-
-if not toc:
-    toc_source = "font_heuristic"
-    for p in doc:
-        for b in p.get_text("dict")["blocks"]:
-            for l in b.get("lines", []):
-                for s in l["spans"]:
-                    # 14pt+ bold + y좌표 상위 90% (러닝 푸터 제외)
-                    if s["size"] >= 14 and (s["flags"] & 16) and s["bbox"][1] < p.rect.height * 0.9:
-                        toc.append([1, s["text"].strip(), p.number + 1])
-
-# OCR 필요 여부
-needs_ocr = all(not p.get_text().strip() for p in doc)
-
-meta = {
-    "pdf_sha256": hashlib.sha256(pdf_path.read_bytes()).hexdigest(),
-    "pdf_total_pages": doc.page_count,
-    "toc": toc,
-    "toc_source": toc_source,
-    "needs_ocr": needs_ocr,
-    "created_at": datetime.datetime.now().astimezone().isoformat(),
-}
-```
-
-## Fallback
-
-- `pdfinfo` (poppler-utils) — PyMuPDF 설치 불가 환경에서 raw 메타만. `pdfinfo -meta file.pdf`
-- `pdfplumber` — 표 인식 우수, TOC 보조 추정에 활용 가능
-
-## 한국 교과서 특성
-
-- KICE·교육부 발행본 대부분 **embedded TOC 없음** → 폰트 휴리스틱 필수
-- 대단원: 20pt+ 고딕 / 차시: 14~16pt bold / 러닝 푸터: 하단 10% (제외)
-- 스캔본은 10년차 이상에서 종종 발견 → `needs_ocr=true` 플래그 phase1에 전달
-
-## 허용 도구
-
-`Read`, `Glob`, `Bash`(pymupdf Python 실행, pdfinfo), `Write`
+**PyMuPDF (fitz)** — PDF 메타·TOC·페이지 수 확인.
 
 ## 검증 게이트
 
-- 필수 필드(subject, grade, unit_title, textbook_pdf_path, delivery_path) 전부 존재
-- textbook_pdf_path가 실재 파일 (sha256 계산 성공)
-- page_range.from ≤ page_range.to ≤ pdf_total_pages
+- 필수 필드(subject, grade, unit_title, textbook_pdf_path, style_reference_paths, delivery_path) 존재
+- textbook PDF 실재
+- style_reference_paths 또는 style_reference_dir 또는 기본 레퍼런스 폴더 중 하나에서 이미지 확인 가능
 - lessons[] 최소 1건
 
 ## 실패 처리
 
-- PDF 암호화 (`fitz.FileDataError`) → `qpdf --decrypt in.pdf out.pdf` 재시도
-- 필드 누락 시 `_questions.md` 작성 → 오케스트레이터 경유 사용자 질문
-- TOC·휴리스틱 모두 실패 → `toc_source: manual` + 사용자에 차시 범위 수동 입력 요청
-
-## 참고
-
-- https://pymupdf.readthedocs.io/en/latest/app1.html#toc
+- TOC 추정 실패 → `toc_source: manual` + 사용자에 차시 범위 확인 요청
+- 스타일 레퍼런스 미지정 → 기본 레퍼런스 폴더 사용
+- 기본 레퍼런스 폴더에도 이미지가 없으면 phase0에서 즉시 중단 후 사용자 요청

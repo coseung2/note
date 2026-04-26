@@ -49,6 +49,22 @@
 - [ ] 도입성 bubble 없음 (교실 놀이·동기유발 멘트 제외)
 - [ ] 🗑 제외 후보 섹션 존재 (프리뷰 하단 drafting)
 - [ ] 모든 차시 `status: draft` 또는 `approved` 프론트매터
+- [ ] **items_grid `loc` 중복 0건** (content-curator.md 2026-04-17):
+  - 각 `items_grid[i].loc` 값이 같은 카드의 `name` 또는 `desc`에 이미 포함된 문자열이면 플래그
+  - 렌더러가 자동 숨김 처리하지만 JSON에 남아 있으면 warn (curator 단계에서 제거 권고)
+- [ ] **교과서 크롭에 이물 객체 0건** (image-scout.md 크롭 순도 규칙, 2026-04-17 feedback_textbook_crop_purity):
+  - 교과서 크롭 이미지(source_type: textbook_crop / textbook_page_crop) 각각 Read로 시각 확인
+  - 블록 개념과 무관한 객체(학습 도우미 캐릭터, 말풍선, "자료 가/나" 탭, 페이지 번호, 인접 삽화 조각) 포함 여부 점검
+  - 발견 시 **blocker** 처리 — 웹 서치 대체 요청
+- [ ] **이미지 출처 캡션 HTML 렌더 0건** (image-scout.md 161 — 출처 표기 불필요 정책, 2026-04-17):
+  - HTML에서 `<div class="cap">` / `<div class="caption">` / `<div class="attribution">` 등 source_detail·license·attribution 출력 탐지
+  - image_map.json에는 내부 기록용으로 보존되어 있으나 **렌더 HTML에 나타나면 위반**
+  - 차시 헤더의 "교과서 p.X~Y" 페이지 범위 라벨은 내비게이션 표시이므로 이 규칙에 해당하지 않음 (이미지 출처 아님)
+- [ ] **keyword_def/list 블록 section_title ↔ keyword 동어반복 0건** (content-curator.md 184-189):
+  - exact match: `section_title == keyword` (예: 둘 다 `"지도"`)
+  - wrap match: `section_title`이 `keyword + 이란?/은/는/을/를` 등 조사·의문형만 붙인 꼴 (예: kw="자연재해", st="자연재해란?")
+  - **렌더 검증도 필수**: section_title이 JSON에 없어도 renderer가 keyword로 fallback하면 `◆ 키워드` + `키워드 : 설명` 동어반복 출력됨 (2026-04-17 L01.b0 사건). 따라서 HTML 전수 검사에서 `<div class="section-title ..."><대상텍스트></div>` 다음 줄의 `<span class="k">` 값이 동일하거나 1~2자 차이면 플래그.
+  - 위반 시 JSON에서 section_title 제거 + renderer에서 keyword fallback 제거 둘 다 필요
 
 ### F. 단원 전체 일관성
 - [ ] 단원 타이틀 동일 (`unit_line`)

@@ -129,8 +129,8 @@ pathlib.Path("phase5/notebook.standalone.html").write_text(html, encoding="utf-8
       {% if img %}
       <div class="image-slot">
         <img src="{{ img.data_uri }}" alt="{{ img.alt_text }}">
-        <div class="caption">{{ img.source_detail }}</div>
-        <div class="attribution">{{ img.attribution or img.license }}</div>
+        {# 2026-04-17 정책: 이미지 출처·위치 캡션 렌더 금지 (image-scout.md 161 — 출처 표기 불필요).
+           source_detail / attribution / license는 image_map.json에 내부 기록용으로만 보존. HTML·PDF에 출력하지 말 것. #}
       </div>
       {% endif %}
     </div>

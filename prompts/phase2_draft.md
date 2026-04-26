@@ -1,32 +1,29 @@
-# Phase 2 — draft
+# Phase 2 — lesson-spec
 
 **에이전트**: content-curator (`agents/content-curator.md`)
 
 ## 목적
-교과서 원문·삽화 카탈로그 → 교사 검토용 `notebook_draft.md` 생성. **교사가 읽고 체크박스 토글·수정할 수 있는 형태**.
+차시별 원문 텍스트를 공책정리용 구조화 JSON으로 바꾼다.
 
 ## 입력
 - `phase0/request.json`
-- `phase1/text_by_page/*.txt`
-- `phase1/image_manifest.json`
+- `phase1/lesson_{NN}.txt`
+- `phase1/extract.json`
 
 ## 산출
-- `phase2/notebook_draft.md` (프론트매터 `status: draft`)
-- `phase2/image_candidates.json`
+- `phase2/notebook.json`
+- `phase2/notebook_{NN}.json`
 
-## 필수 포함 섹션
-1. 페이지별 학습목표·키워드:설명·callout·말풍선·이미지 후보·한문장 정리
-2. 🗑 "LLM이 뺐지만 교사가 복구 가능" 섹션
-3. 📝 "교사 추가 지시" 자유 텍스트 영역
-
-## 선별 원칙
-- 교과서 본문 어휘 우선, AI 창작 금지
-- 페이지당 블록 3~6개
-- 이미지는 교과서 삽화 우선, 부족 시 `external:search:{query}` 마커
+## 필수 포함 요소
+1. 차시명
+2. 핵심 개념 블록 3개 이상
+3. 이미지 자리 프레임에 들어갈 설명문(`image_frame_prompt`)
+4. 필요 시 한 문장 정리 / 빈칸 정리
 
 ## 검증 게이트
-- 모든 페이지 블록 ≥ 3
-- 모든 페이지 이미지 후보 ≥ 1
+- 모든 차시에 blocks ≥ 3
+- 시각 요소가 필요한 카드에는 `image_frame_prompt` 존재
+- 텍스트만으로 이해 가능한 요약 구조
 
 ## 다음 phase
-→ phase3 (교사 검증)
+→ phase3 (draft-board)

@@ -1,33 +1,32 @@
-# Notebook Workflow — 에이전트 레지스트리
+# Notebook Workflow — Active V2 에이전트 레지스트리
 
-교과서 PDF → 학생 공책정리 PDF 파이프라인의 각 phase를 담당하는 서브에이전트 카탈로그.
+교과서 PDF → 학생 공책정리 PNG/PDF 파이프라인의 **활성(v2)** phase별 에이전트 카탈로그.
 
-오케스트레이터(메인 세션)는 직접 리서치·편집을 하지 않고 `Agent` 도구로 각 에이전트를 호출한다.
+오케스트레이터(메인 세션)는 직접 편집·렌더·스타일 변환을 하지 않고, 각 phase를 전담 에이전트에 위임한다.
 
 ## Phase ↔ 에이전트 매핑
 
 | Phase | 이름 | 에이전트 | 산출 | 검증 게이트 |
 |---|---|---|---|---|
-| 0 | intake | **intake-analyst** | `phase0/request.json` | 필수 필드 완비 |
-| 1 | extract | **textbook-extractor** | `phase1/text.txt`, `phase1/images/`, `phase1/image_manifest.json` | 이미지 추출 수 > 0 |
-| 2 | draft | **content-curator** | `phase2/notebook_draft.md`, `phase2/image_candidates.json` | 모든 페이지에 블록 ≥ 3 |
-| 3 | validate | **(교사 수동)** — 에이전트 없음 | `phase3/notebook_draft.approved.md` | 파일 존재 + `status: approved` 프론트매터 |
-| 4 | image-source | **image-scout** | `phase4/images/`, `phase4/image_map.json` | 사용하기로 한 모든 블록에 이미지 경로 존재 |
-| 5 | render | **html-builder** | `phase5/notebook.html` | HTML valid + 이미지 경로 해석됨 |
-| 6 | pdf | **pdf-renderer** | `phase6/notebook.pdf` | PDF 페이지 수 == 입력 페이지 수 |
-| 7 | deliver | **dispatcher** | OneDrive 배송 완료 | 복사본 파일 존재 |
+| 0 | intake | **intake-analyst** | `phase0/request.json` | 필수 필드 완비 + 스타일 레퍼런스 경로 존재 |
+| 1 | extract | **textbook-extractor** | `phase1/text_all_pages.txt`, `phase1/lesson_{NN}.txt`, `phase1/extract.json` | 차시별 텍스트 청크 수 == lessons[] |
+| 2 | lesson-spec | **content-curator** | `phase2/notebook.json`, `phase2/notebook_{NN}.json` | 모든 차시에 요약 블록 + 이미지 프레임 설명 존재 |
+| 3 | draft-board | **draft-board-builder** | `phase3/lesson_{NN}.png`, `phase3/lesson_{NN}.pdf`, `phase3/board_manifest.json` | 차시별 드래프트 보드 렌더 성공 |
+| 4 | stylize | **ima2-stylizer** | `phase4/lesson_{NN}.png`, `phase4/requests.json`, `phase4/prompts/*` | 차시별 최종 PNG 생성 성공 |
+| 5 | deliver | **dispatcher** | OneDrive 배송 완료 | 복사본 존재 + sha256 기록 |
 
 ## 에이전트 공통 원칙
 
-- **입력 계약 엄수**: 지정된 phase의 산출 파일만 입력. 다른 phase 결과 읽지 않음
-- **산출 계약 엄수**: 지정된 경로·스키마대로만 저장
-- **ambiguity 유보**: 판단 불가 시 `_questions.md`에 적어 오케스트레이터에 에스컬레이션
-- **저작권 원칙**: 교과서 삽화는 학교 교육 목적 이용 한정. 외부 이미지는 CC/공공 우선 + 출처 메타데이터 필수
+- **입력 계약 엄수**: 지정된 phase의 산출 파일만 입력으로 사용
+- **산출 계약 엄수**: 지정된 경로·스키마대로 저장
+- **무인 기본 흐름**: 사용자 검수는 기본 단계가 아니다
+- **텍스트 정확도 보존**: phase4는 스타일 변환 단계이지 내용 재작성 단계가 아니다
+- **스타일 레퍼런스 우선**: `ima2` 실행 시 첫 번째 레퍼런스는 스타일 앵커, 두 번째는 phase3 draft-board를 사용
 - **실패 시 3회 재시도**: 오케스트레이터가 판단
 
 ## 호출 포맷
 
-```
+```text
 Agent({
   description: "Phase {N} — {agent-name}",
   subagent_type: "general-purpose",
@@ -41,11 +40,23 @@ Agent({
 - phase 간 파일 경로 전달
 - 검증 게이트 판정
 - 재시도·에스컬레이션 결정
-- 사용자 커뮤니케이션 (draft 검증 요청, 이미지 선택 요청 등)
+- 사용자 커뮤니케이션 (스타일 레퍼런스 누락, PDF 차시 경계 애매함 등)
 
 ## 오케스트레이터가 하지 않는 일
 
-- 직접 pdftotext·pdfimages 실행 (extractor 담당)
-- 직접 이미지 서치 (scout 담당)
-- 직접 HTML 편집 (builder 담당)
-- 에이전트 산출물 수정 (재호출로 해결)
+- 직접 PDF 파싱
+- 직접 구조화 JSON 작성
+- 직접 드래프트보드 렌더
+- 직접 `ima2` 프롬프트 타이핑/수정
+- 에이전트 산출물 수동 수정
+
+## Legacy(v1) 에이전트
+
+다음 문서는 기존 HTML/CSS + 교사 수동 검수 기반 흐름 기록용이다.
+
+- `image-scout.md`
+- `reviewer.md`
+- `html-builder.md`
+- `pdf-renderer.md`
+
+active pipeline의 기준 문서는 아니다.
